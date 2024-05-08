@@ -9,16 +9,16 @@ exports.up = async function(knex) {
     table.integer('trader');
   });
 
-  return knex.schema.createTable('bids', table => {
+  await knex.schema.createTable('bids', table => {
     table.integer('order_id').primary();
-    table.foreign('order_id').reference('orders.id');
+    // table.foreign('order_id').reference('orders.id');
     table.integer('price');
     table.index('price');
   });
 
   return knex.schema.createTable('asks', table => {
     table.integer('order_id').primary();
-    table.foreign('order_id').reference('orders.id');
+    // table.foreign('order_id').reference('orders.id');
     table.integer('price');
     table.index('price');
   });
