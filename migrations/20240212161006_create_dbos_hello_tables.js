@@ -1,18 +1,32 @@
 const { Knex } = require("knex");
 
 exports.up = async function(knex) {
-  await knex.schema.createTable('dbos_hello', table => {
-    table.text('name').primary();
-    table.integer('greet_count').defaultTo(0);
+  await knex.schema.createTable('orders', table => {
+    table.integer('id').primary();
+    table.enu('side', ['buy', 'sell']);
+    table.integer('price');
+    table.integer('size');
+    table.integer('trader');
   });
 
-  return knex.schema.createTable('dbos_greetings', table => {
-    table.text('greeting_name');
-    table.text('greeting_note_content');
+  return knex.schema.createTable('bids', table => {
+    table.integer('order_id').primary();
+    table.foreign('order_id').reference('orders.id');
+    table.integer('price');
+    table.index('price');
+  });
+
+  return knex.schema.createTable('asks', table => {
+    table.integer('order_id').primary();
+    table.foreign('order_id').reference('orders.id');
+    table.integer('price');
+    table.index('price');
   });
 };
 
 exports.down = async function(knex) {
-  await knex.schema.dropTable('dbos_greetings');
-  return knex.schema.dropTable('dbos_hello');
+  await knex.schema.dropTable('orders');
+  await knex.schema.dropTable('bids');
+  return knex.schema.dropTable('asks');
 };
+
