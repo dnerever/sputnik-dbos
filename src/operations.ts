@@ -14,8 +14,16 @@ export interface Order {
   trader: number;
 }
 
-export interface Fill {
+export interface OrderBookEntry {
+  order_id: number;
+  price: number;
+}
 
+export interface Fill {
+  size: number;
+  price: number;
+  taker_order_id: number;
+  maker_order_id: number;
 }
 
 export class Hello {
@@ -23,12 +31,32 @@ export class Hello {
 
   @Transaction()
   static async insertOrder(ctxt: TransactionContext<Knex>, order: Order) {
+    var orders = await ctxt.client<Order>('orders').insert(order).returning('id');
+    const orderID = orders[0].id;
+    var table = (order.side == Side.Buy) ? 'bids' : 'asks';
 
+    await ctxt.client<OrderBookEntry>(table).insert({
+      order_id: orderID,
+      price: order.price
+    })
+    return orderID;
   }
 
   @Transaction()
   static async findMatches(ctxt: TransactionContext<Knex>): Promise<Fill[]> {
-    return [];
+    var bids = await ctxt.client<OrderBookEntry>('bids').orderBy('price', 'desc')
+    var asks = await ctxt.client<OrderBookEntry>('asks').orderBy('price', 'asc');
+
+    // TODO: Find matches
+
+    return [
+      {
+        size: 1,
+        price: 1,
+        taker_order_id: 1,
+        maker_order_id: 2,
+      }
+    ];
   }
 
   @Communicator()
