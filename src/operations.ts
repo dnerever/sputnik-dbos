@@ -5,12 +5,10 @@ import Koa from 'koa';
 
 // The schema of the database table used in this example.
 
-enum Side {
-  Buy, Sell
-}
+
 export interface Order {
   id: number;
-  side: Side;
+  side: string;
   price: number;
   size: number;
   trader: number;
@@ -50,7 +48,7 @@ export class Hello {
   static async insertOrder(ctxt: TransactionContext<Knex>, order: Order) {
     var orders = await ctxt.client<Order>('orders').insert(order).returning('id');
     const orderID = orders[0].id;
-    var table = (order.side == Side.Buy) ? 'bids' : 'asks';
+    var table = (order.side == 'buy') ? 'bids' : 'asks';
 
     await ctxt.client<OrderBookEntry>(table).insert({
       order_id: orderID,
@@ -90,8 +88,8 @@ export class Hello {
   }
 
   @PostApi('/order') 
-  static async placeOrderHandler(ctxt: HandlerContext, @ArgOptional @ArgSource(ArgSources.BODY) order: Order) {
-    console.log(ctxt.koaContext.request.body);
-    // return ctxt.invoke(Hello).placeOrderWorkflow(order);
+  static async placeOrderHandler(ctxt: HandlerContext, @ArgSource(ArgSources.BODY) order: Order) {
+    await ctxt.invoke(Hello).placeOrderWorkflow(order);
+    return;
   }
 }
