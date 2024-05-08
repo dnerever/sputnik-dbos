@@ -58,39 +58,53 @@ export class Hello {
   }
 
   @Transaction()
-  static async findMatches(ctxt: TransactionContext<Knex>): Promise<Fill[]> {
+  static async findMatches(ctxt: TransactionContext<Knex>) {
     var bids = await ctxt.client<OrderBookEntry>('bids').orderBy('price', 'desc')
-    var asks = await ctxt.client<OrderBookEntry>('asks').orderBy('price', 'asc');
+    var asks = await ctxt.client<OrderBookEntry>('asks').orderBy('price', 'asc')
 
     let res = [];
 
     // TODO: Find matches
-    while (bids[0].price >= asks[0].price) {  // should be <=
-      var taker_order = await ctxt.client<OrderBookEntry>('orders').where({ id: bids[0].order_id })// query the taker and maker orders
+    const bid_id = bids[0].order_id
+    ctxt.logger.info(bid_id)
+    // while (bids[0].price >= asks[0].price) {  // should be <=
+    //   // const bid_id = bids[0].order_id
+    //   // console.log(bid_id)
+      // var taker_order = await ctxt.client<OrderBookEntry>('orders').select('*').where({ id: bid_id })// query the taker and maker orders
 
-      var true_price = // choose th   e earliest timestamp
+    //   var true_price = // choose the earliest timestamp
 
-      res.push({
-        size: Math.min( ),
-        price: Math.min(bids[0].price, asks[0].price),
-        taker_order_id: ,
-        maker_order_id: 2,
-      });
-    }
+    //   // res.push({
+    //   //   size: Math.min( ),
+    //   //   price: Math.min(bids[0].price, asks[0].price),
+    //   //   taker_order_id: ,
+    //   //   maker_order_id: 2,
+    //   // });
+    // }
 
-    return res;
+    // return res;
   }
 
   @Communicator()
   static async sendFills(ctxt: CommunicatorContext, fills: Fill[]) {
+
+  }
+
+  @Transaction()
+  static async listOrders(ctxt: TransactionContext<Knex>) {
+    var orders = await ctxt.client<OrderBookEntry>('orders').select('*')
     
+    ctxt.logger.info(orders)
+
   }
 
   @Workflow()
   static async placeOrderWorkflow(ctxt: WorkflowContext, order: Order) {
 
     await ctxt.invoke(Hello).insertOrder(order);
-    var fills = await ctxt.invoke(Hello).findMatches();
+    await ctxt.invoke(Hello).findMatches();
+    const fills:Fill[] = [];
+    // var fills = await ctxt.invoke(Hello).findMatches();
     return ctxt.invoke(Hello).sendFills(fills);
   }
 

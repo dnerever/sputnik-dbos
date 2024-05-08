@@ -2,7 +2,7 @@ const { Knex } = require("knex");
 
 exports.up = async function(knex) {
   await knex.schema.createTable('orders', table => {
-    table.integer('id').primary();
+    table.increments('id').primary();
     table.enu('side', ['buy', 'sell']);
     table.integer('price');
     table.integer('size');
