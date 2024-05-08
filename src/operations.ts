@@ -94,8 +94,9 @@ export class Hello {
   static async listOrders(ctxt: TransactionContext<Knex>) {
     var orders = await ctxt.client<OrderBookEntry>('orders').select('*')
     
-    ctxt.logger.info(orders)
+    // ctxt.logger.info(orders)
 
+    return orders
   }
 
   @Workflow()
@@ -106,6 +107,11 @@ export class Hello {
     const fills:Fill[] = [];
     // var fills = await ctxt.invoke(Hello).findMatches();
     return ctxt.invoke(Hello).sendFills(fills);
+  }
+
+  @GetApi('/listOrders')
+  static async listOrderHandler(ctxt: HandlerContext) {
+    return await ctxt.invoke(Hello).listOrders();
   }
 
   @PostApi('/order') 
