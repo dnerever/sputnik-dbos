@@ -62,16 +62,23 @@ export class Hello {
     var bids = await ctxt.client<OrderBookEntry>('bids').orderBy('price', 'desc')
     var asks = await ctxt.client<OrderBookEntry>('asks').orderBy('price', 'asc');
 
-    // TODO: Find matches
+    let res = [];
 
-    return [
-      {
-        size: 1,
-        price: 1,
-        taker_order_id: 1,
+    // TODO: Find matches
+    while (bids[0].price >= asks[0].price) {  // should be <=
+      var taker_order = await ctxt.client<OrderBookEntry>('orders').where({ id: bids[0].order_id })// query the taker and maker orders
+
+      var true_price = // choose th   e earliest timestamp
+
+      res.push({
+        size: Math.min( ),
+        price: Math.min(bids[0].price, asks[0].price),
+        taker_order_id: ,
         maker_order_id: 2,
-      }
-    ];
+      });
+    }
+
+    return res;
   }
 
   @Communicator()
