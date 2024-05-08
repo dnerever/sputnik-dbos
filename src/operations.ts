@@ -1,5 +1,7 @@
-import { TransactionContext, CommunicatorContext, Transaction, GetApi, ArgSource, ArgSources, PostApi, Workflow, Communicator, WorkflowContext } from '@dbos-inc/dbos-sdk';
+import { TransactionContext, CommunicatorContext, Transaction, GetApi, ArgSource, ArgSources, PostApi, Workflow, Communicator, WorkflowContext, HandlerContext, ArgOptional } from '@dbos-inc/dbos-sdk';
 import { Knex } from 'knex';
+import { KoaMiddleware } from '@dbos-inc/dbos-sdk';
+import Koa from 'koa';
 
 // The schema of the database table used in this example.
 
@@ -26,8 +28,23 @@ export interface Fill {
   maker_order_id: number;
 }
 
+const exampleMiddleware: Koa.Middleware = async (ctx, next) => {
+  console.log(ctx.request.req);
+  await next();
+};
+
+import { bodyParser } from "@koa/bodyparser";
+import { KoaBodyParser } from '@dbos-inc/dbos-sdk';
+
+@KoaBodyParser(bodyParser({
+  extendTypes: {
+    json: ["application/json", "application/custom-content-type"],
+  },
+  encoding: "utf-8"
+}))
 export class Hello {
 
+  
 
   @Transaction()
   static async insertOrder(ctxt: TransactionContext<Knex>, order: Order) {
@@ -64,13 +81,17 @@ export class Hello {
 
   }
 
-  @PostApi('/order') // Serve this function from HTTP GET requests to the /greeting endpoint with 'user' as a path parameter
-  @Workflow()  // Run this function as a database transaction
-  static async helloTransaction(ctxt: WorkflowContext, @ArgSource(ArgSources.BODY) order: Order) {
-    // Retrieve and increment the number of times this user has been greeted.
+  @Workflow()
+  static async placeOrderWorkflow(ctxt: WorkflowContext, order: Order) {
 
     await ctxt.invoke(Hello).insertOrder(order);
     var fills = await ctxt.invoke(Hello).findMatches();
-    ctxt.invoke(Hello).sendFills(fills);
+    return ctxt.invoke(Hello).sendFills(fills);
+  }
+
+  @PostApi('/order') 
+  static async placeOrderHandler(ctxt: HandlerContext, @ArgOptional @ArgSource(ArgSources.BODY) order: Order) {
+    console.log(ctxt.koaContext.request.body);
+    // return ctxt.invoke(Hello).placeOrderWorkflow(order);
   }
 }
