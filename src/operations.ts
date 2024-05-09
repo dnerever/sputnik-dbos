@@ -63,6 +63,8 @@ export class Hello {
     var bids = await ctxt.client<OrderBookEntry>('bids').orderBy('price', 'desc')
     var asks = await ctxt.client<OrderBookEntry>('asks').orderBy('price', 'asc')
 
+    ctxt.logger.info(bids)
+    ctxt.logger.info(asks)
     let res = [];
 
     // TODO: Find matches
@@ -70,17 +72,27 @@ export class Hello {
     if ((bids.length > 0) && (asks.length > 0) && (bids[0].price >= asks[0].price)) {
       var taker_order = await ctxt.client<Order>('orders').where( 'id', bids[0].order_id ) // query the taker and maker orders
       var maker_order = await ctxt.client<Order>('orders').where( 'id', asks[0].order_id ) // query the taker and maker orders
-      // ctxt.logger.info(taker_order)
-      // ctxt.logger.info(maker_order)
 
+      // ctxt.logger.info(taker_order)
+      // ctxt.logger.info("break")
+      // ctxt.logger.info(asks[0])
       var true_price = (taker_order[0].timestamp > maker_order[0].timestamp) ? taker_order[0].price : maker_order[0].price  // choose the earliest placed order
 
+      const true_size = Math.min(taker_order[0].size, maker_order[0].size);
+
       res.push({
-        size: Math.min(taker_order[0].size, maker_order[0].size),
+        size: true_size,
         price: true_price,
         taker_order_id: taker_order[0].id,
         maker_order_id: maker_order[0].id,
       });
+
+      // await ctxt.client<Order>('orders').where( 'id', (true_size == taker_order[0].size) ? taker_order[0].id : maker_order[0].id ).del();
+      await ctxt.client<Order>('orders').where( 'id', taker_order[0].id ).del();
+      await ctxt.client<Order>('asks').where( 'order_id', maker_order[0].id ).del();
+      await ctxt.client<Order>('orders').where( 'id', maker_order[0].id ).del();   //shoul only reduce size of this order not remove it comepletely
+      await ctxt.client<Order>('bids').where( 'order_id', taker_order[0].id ).del();
+
     }
     else {
       ctxt.logger.info('no matches found')
@@ -102,16 +114,22 @@ export class Hello {
     return orders
   }
 
-  @Workflow()
-  static async placeOrderWorkflow(ctxt: WorkflowContext, order: Order): Promise<string> {
+  // @Workflow()
+  // static async placeOrderWorkflow(ctxt: WorkflowContext, order: Order) {
     
+    
+  // }
+
+  @Workflow()
+  @PostApi('/order') 
+  static async placeOrderHandler(ctxt: WorkflowContext, @ArgSource(ArgSources.BODY) order: Order) {
     await ctxt.invoke(Hello).insertOrder(order);
-    const matches = await ctxt.invoke(Hello).findMatches();
-    await ctxt.logger.info(matches);
-    const fills:Fill[] = [];
-    // var fills = await ctxt.invoke(Hello).findMatches();
-    await ctxt.invoke(Hello).sendFills(fills);
-    return "foo";
+    // const fills:Fill[] = [];
+    var fills = await ctxt.invoke(Hello).findMatches();
+    await ctxt.logger.info(fills);
+    // await ctxt.invoke(Hello).sendFills(fills);
+    // const res = await ctxt.invoke(Hello).placeOrderWorkflow(order);
+    return fills;
   }
 
   @GetApi('/listOrders')
@@ -119,9 +137,4 @@ export class Hello {
     return await ctxt.invoke(Hello).listOrders();
   }
 
-  @PostApi('/order') 
-  static async placeOrderHandler(ctxt: HandlerContext, @ArgSource(ArgSources.BODY) order: Order) {
-    const res = await ctxt.invoke(Hello).placeOrderWorkflow(order);
-    return res;
-  }
 }

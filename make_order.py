@@ -24,7 +24,8 @@ if args.side != 'buy' and args.side != 'sell':
     print("Side must be either 'buy' or 'sell'")
     exit(1)
 
-url = "http://localhost:3000/order"
+# url = "http://localhost:3000/order"
+url = "https://dnerever-sputnik-dbos.cloud.dbos.dev/order"
 
 # Define the JSON data structure to send
 data = {
