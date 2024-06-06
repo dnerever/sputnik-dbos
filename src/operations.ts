@@ -41,7 +41,7 @@ import { KoaBodyParser } from '@dbos-inc/dbos-sdk';
   },
   encoding: "utf-8"
 }))
-export class Hello {
+export class OrderClass {
 
   
 
@@ -123,18 +123,18 @@ export class Hello {
   @Workflow()
   @PostApi('/order') 
   static async placeOrderHandler(ctxt: WorkflowContext, @ArgSource(ArgSources.BODY) order: Order) {
-    await ctxt.invoke(Hello).insertOrder(order);
+    await ctxt.invoke(OrderClass).insertOrder(order);
     // const fills:Fill[] = [];
-    var fills = await ctxt.invoke(Hello).findMatches();
+    var fills = await ctxt.invoke(OrderClass).findMatches();
     await ctxt.logger.info(fills);
-    // await ctxt.invoke(Hello).sendFills(fills);
-    // const res = await ctxt.invoke(Hello).placeOrderWorkflow(order);
+    // await ctxt.invoke(OrderClass).sendFills(fills);
+    // const res = await ctxt.invoke(OrderClass).placeOrderWorkflow(order);
     return fills;
   }
 
   @GetApi('/listOrders')
   static async listOrderHandler(ctxt: HandlerContext) {
-    return await ctxt.invoke(Hello).listOrders();
+    return await ctxt.invoke(OrderClass).listOrders();
   }
 
 }
