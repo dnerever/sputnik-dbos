@@ -119,11 +119,19 @@ export class OrderClass {
     // const greet_count = Object.keys(rows).length;
     // return `Hello! You have been greeted ${greet_count} times.\n`;
 
-    var buy_order_rows = await ctxt.client<OrderBookEntry>('orders').select('*').where('price >= 10')
-    var order_rows = await ctxt.client<OrderBookEntry>('orders').select('*')
+    const order_rows = await ctxt.client<OrderBookEntry>('orders').select('*')
     const rows = Object.keys(order_rows).length;
+    const buy_order_rows = await ctxt.client<Order>('orders').select('*').whereRaw('side = ?',['buy'])
+    const buy_order_count = Object.keys(buy_order_rows).length;
 
-    return `There are ${rows} open orders.\n ${buy_order_rows} of those orders are priced at $10 or greater.`;
+    const sell_order_rows = await ctxt.client<Order>('orders').select('*').whereRaw('side = ?',['sell'])
+    const sell_order_count = Object.keys(sell_order_rows).length;
+
+    const result = `There are ${rows} open orders.\n
+    BUY order count: ${buy_order_count}\n
+    SELL order count: ${sell_order_count}\n`;
+    
+    return result;
   }
 
   // @Workflow()
