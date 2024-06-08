@@ -128,8 +128,10 @@ export class OrderClass {
     const sell_order_count = Object.keys(sell_order_rows).length;
 
     const result = `There are ${rows} open orders.\n
-    BUY order count: ${buy_order_count}\n
-    SELL order count: ${sell_order_count}\n`;
+    BUY order count: ${buy_order_count}
+    SELL order count: ${sell_order_count}`;
+
+    //todo: replace this text with a true visual table using React or Vue
     
     return result;
   }
