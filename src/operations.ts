@@ -43,8 +43,6 @@ import { KoaBodyParser } from '@dbos-inc/dbos-sdk';
 }))
 export class OrderClass {
 
-  
-
   @Transaction()
   static async insertOrder(ctxt: TransactionContext<Knex>, order: Order) {
     var orders = await ctxt.client<Order>('orders').insert(order).returning('id');
@@ -114,6 +112,22 @@ export class OrderClass {
     return orders
   }
 
+  @Transaction()
+  static async ordersPrettyPrint(ctxt: TransactionContext<Knex>) {
+    // var orders = await ctxt.client<OrderBookEntry>('orders').select('*')
+
+    // const query = "INSERT INTO OrderBookEntry (name, greet_count) VALUES (?, 1) ON CONFLICT (name) DO UPDATE SET greet_count = dbos_hello.greet_count + 1 RETURNING greet_count;";
+    
+    // const { rows } = await ctxt.client.raw(query) as { rows: OrderBookEntry[] };
+    // const greet_count = Object.keys(rows).length;
+    // return `Hello! You have been greeted ${greet_count} times.\n`;
+
+    var order_rows = await ctxt.client<OrderBookEntry>('orders').select('*')
+    const rows = Object.keys(order_rows).length;
+
+    return `Hello! You have been greeted ${rows} times.\n`;
+  }
+
   // @Workflow()
   // static async placeOrderWorkflow(ctxt: WorkflowContext, order: Order) {
     
@@ -135,6 +149,11 @@ export class OrderClass {
   @GetApi('/listOrders')
   static async listOrderHandler(ctxt: HandlerContext) {
     return await ctxt.invoke(OrderClass).listOrders();
+  }
+
+  @GetApi('/ordersPP')
+  static async ordersPrettyPrintHandler(ctxt: HandlerContext) {
+    return await ctxt.invoke(OrderClass).ordersPrettyPrint();
   }
 
 }

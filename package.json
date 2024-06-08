@@ -10,7 +10,7 @@
     "start": "npx dbos-sdk start"
   },
   "devDependencies": {
-    "@dbos-inc/dbos-cloud": "^1.7.6",
+    "@dbos-inc/dbos-cloud": "^1.12.10",
     "@dbos-inc/eslint-plugin": "^0.0.6",
     "@types/jest": "^29.5.5",
     "@types/supertest": "^2.0.14",
