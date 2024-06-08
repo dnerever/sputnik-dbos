@@ -114,18 +114,16 @@ export class OrderClass {
 
   @Transaction()
   static async ordersPrettyPrint(ctxt: TransactionContext<Knex>) {
-    // var orders = await ctxt.client<OrderBookEntry>('orders').select('*')
-
     // const query = "INSERT INTO OrderBookEntry (name, greet_count) VALUES (?, 1) ON CONFLICT (name) DO UPDATE SET greet_count = dbos_hello.greet_count + 1 RETURNING greet_count;";
-    
     // const { rows } = await ctxt.client.raw(query) as { rows: OrderBookEntry[] };
     // const greet_count = Object.keys(rows).length;
     // return `Hello! You have been greeted ${greet_count} times.\n`;
 
+    var buy_order_rows = await ctxt.client<OrderBookEntry>('orders').select('*').where('price >= 10')
     var order_rows = await ctxt.client<OrderBookEntry>('orders').select('*')
     const rows = Object.keys(order_rows).length;
 
-    return `Hello! You have been greeted ${rows} times.\n`;
+    return `There are ${rows} open orders.\n ${buy_order_rows} of those orders are priced at $10 or greater.`;
   }
 
   // @Workflow()
