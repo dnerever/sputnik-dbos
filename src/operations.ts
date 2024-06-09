@@ -164,4 +164,11 @@ export class OrderClass {
     return await ctxt.invoke(OrderClass).ordersPrettyPrint();
   }
 
+  @PostApi('/crash_application')
+  static async crashApplication(_ctxt: HandlerContext) {
+
+    // For testing and demo purposes :) 
+    process.exit(1);
+  }
+
 }
