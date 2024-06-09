@@ -15,34 +15,34 @@ async function render(file: string, ctx?: object): Promise<string> {
 
 export class Frontend {
 
-//   @GetApi('/')
-//   static async frontend(ctxt: HandlerContext) {
-//     const prod = await ctxt.invoke(ShopUtilities).retrieveProduct();
-//     return await render("purchase", {
-//       uuid: uuidv4(),
-//       inventory: prod.inventory,
-//       product: prod.product,
-//       description: prod.description,
-//       price: prod.price,
-//     });
-//   }
-
-  @GetApi('/payment/:key')
-  static payment(_ctxt: HandlerContext, key: string) {
-    return render("payment", {
-      uuid: key,
+  @GetApi('/')
+  static async frontend(ctxt: HandlerContext) {
+    // const prod = await ctxt.invoke(ShopUtilities).retrieveProduct();
+    return await render("purchase", {
+      uuid: uuidv4(),
+      inventory: 'prod.inventory',
+      product: 'prod.product',
+      description: 'prod.description',
+      price: 'prod.price',
     });
   }
-  
-  @GetApi('/error')
-  static error(_ctxt: HandlerContext) {
-    return render("error", {});
-  }
 
-  @GetApi('/crash')
-  static crash(_ctxt: HandlerContext) {
-    return render("crash", {});
-  }
+//   @GetApi('/payment/:key')
+//   static payment(_ctxt: HandlerContext, key: string) {
+//     return render("payment", {
+//       uuid: key,
+//     });
+//   }
+  
+//   @GetApi('/error')
+//   static error(_ctxt: HandlerContext) {
+//     return render("error", {});
+//   }
+
+//   @GetApi('/crash')
+//   static crash(_ctxt: HandlerContext) {
+//     return render("crash", {});
+//   }
 
 //   @GetApi('/order/:order_id')
 //   static async order(ctxt: HandlerContext, order_id: number) {

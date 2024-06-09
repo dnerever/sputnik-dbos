@@ -2,6 +2,11 @@ import { TransactionContext, CommunicatorContext, Transaction, GetApi, ArgSource
 import { Knex } from 'knex';
 import { KoaMiddleware } from '@dbos-inc/dbos-sdk';
 import Koa from 'koa';
+// import { ShopUtilities } from './utilities';
+import { Frontend } from './frontend';
+
+// export { ShopUtilities };
+export { Frontend };
 
 // The schema of the database table used in this example.
 
@@ -41,6 +46,7 @@ import { KoaBodyParser } from '@dbos-inc/dbos-sdk';
   },
   encoding: "utf-8"
 }))
+
 export class OrderClass {
 
   @Transaction()
