@@ -1,29 +1,49 @@
 import { GetApi, HandlerContext } from "@dbos-inc/dbos-sdk";
 import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
-// import { ShopUtilities, OrderStatus } from "./utilities";
+import Koa from 'koa';
+import { ShopUtilities } from "./utilities";
 import { Liquid } from "liquidjs";
 
-const engine = new Liquid({
+const exampleMiddleware: Koa.Middleware = async (ctx, next) => {
+    console.log(ctx.request.req);
+    await next();
+};
+
+// import { bodyParser } from "@koa/bodyparser";
+// import { KoaBodyParser } from '@dbos-inc/dbos-sdk';
+
+// @KoaBodyParser(bodyParser({
+//     extendTypes: {
+//       json: ["application/json", "application/custom-content-type"],
+//     },
+//     encoding: "utf-8"
+// }))
+
+// This engine makes cleans up the path and name of each liquid file
+const liquidEngine = new Liquid({
   root: path.resolve(__dirname, '..', 'public'),
   extname: ".liquid"
 });
 
+// create a render function using the liquid engine
 async function render(file: string, ctx?: object): Promise<string> {
-  return await engine.renderFile(file, ctx) as string;
+  return await liquidEngine.renderFile(file, ctx) as string;
 }
 
 export class Frontend {
 
   @GetApi('/')
-  static async frontend(ctxt: HandlerContext) {
-    // const prod = await ctxt.invoke(ShopUtilities).retrieveProduct();
-    return await render("purchase", {
-      uuid: uuidv4(),
-      inventory: 'prod.inventory',
-      product: 'prod.product',
-      description: 'prod.description',
-      price: 'prod.price',
+static async frontend(ctxt: HandlerContext) {
+    const prod = await ctxt.invoke(ShopUtilities).returnOrders();
+    
+    //note: "orderDisplay" is the filename minus the extension of the liquid template
+    return await render("orderDisplay", {   //todo: add my own data to replace the purchase data
+        id: prod[0].id,
+        side: prod[0].side,
+        price: prod[0].price,
+        size: prod[0].size,
+        trader: prod[0].trader,
+        timestamp: prod[0].timestamp,
     });
   }
 
