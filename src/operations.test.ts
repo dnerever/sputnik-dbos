@@ -1,5 +1,5 @@
 import { TestingRuntime, createTestingRuntime } from "@dbos-inc/dbos-sdk";
-import { Hello, dbos_hello } from "./operations";
+import { OrderClass } from "./operations";
 import request from "supertest";
 
 describe("operations-test", () => {

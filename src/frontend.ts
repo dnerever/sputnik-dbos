@@ -38,12 +38,13 @@ static async frontend(ctxt: HandlerContext) {
     
     //note: "orderDisplay" is the filename minus the extension of the liquid template
     return await render("orderDisplay", {   //todo: add my own data to replace the purchase data
-        id: prod[0].id,
-        side: prod[0].side,
-        price: prod[0].price,
-        size: prod[0].size,
-        trader: prod[0].trader,
-        timestamp: prod[0].timestamp,
+        // id: prod[0].id,
+        // side: prod[0].side,
+        // price: prod[0].price,
+        // size: prod[0].size,
+        // trader: prod[0].trader,
+        // timestamp: prod[0].timestamp,
+        products: prod,
     });
   }
 

@@ -18,6 +18,20 @@ export interface Order {
     timestamp: Date;
 }
 
+export enum OrderStatus {
+    PENDING = 0,
+    FULFILLED = 1,
+    CANCELLED = -1,
+}
+
+export interface Product {
+    product_id: number,
+    product: string,
+    description: string,
+    inventory: number,
+    price: number,
+}
+
 export const PRODUCT_ID = 1;
 
 export class ShopUtilities {
@@ -49,41 +63,41 @@ export class ShopUtilities {
     return item[0];
   }
 
-  @Transaction()
-  static async createOrder(ctxt: KnexTransactionContext): Promise<number> {
-    const orders = await ctxt.client<Order>('orders').insert({
-      order_status: OrderStatus.PENDING,
-      product_id: PRODUCT_ID,
-      last_update_time: ctxt.client.fn.now()
-    }).returning('order_id');
-    const orderID = orders[0].order_id;
-    return orderID;
-  }
+//   @Transaction()
+//   static async createOrder(ctxt: KnexTransactionContext): Promise<number> {
+//     const orders = await ctxt.client<Order>('orders').insert({
+//       order_status: OrderStatus.PENDING,
+//       product_id: PRODUCT_ID,
+//       last_update_time: ctxt.client.fn.now()
+//     }).returning('order_id');
+//     const orderID = orders[0].order_id;
+//     return orderID;
+//   }
 
-  @Transaction()
-  static async fulfillOrder(ctxt: KnexTransactionContext, order_id: number): Promise<void> {
-    await ctxt.client<Order>('orders').where({ order_id: order_id }).update({
-      order_status: OrderStatus.FULFILLED,
-      last_update_time: ctxt.client.fn.now()
-    });
-  }
+//   @Transaction()
+//   static async fulfillOrder(ctxt: KnexTransactionContext, order_id: number): Promise<void> {
+//     await ctxt.client<Order>('orders').where({ order_id: order_id }).update({
+//       order_status: OrderStatus.FULFILLED,
+//       last_update_time: ctxt.client.fn.now()
+//     });
+//   }
 
-  @Transaction()
-  static async errorOrder(ctxt: KnexTransactionContext, order_id: number): Promise<void> {
-    await ctxt.client<Order>('orders').where({ order_id: order_id }).update({
-      order_status: OrderStatus.CANCELLED,
-      last_update_time: ctxt.client.fn.now()
-    });
-  }
+//   @Transaction()
+//   static async errorOrder(ctxt: KnexTransactionContext, order_id: number): Promise<void> {
+//     await ctxt.client<Order>('orders').where({ order_id: order_id }).update({
+//       order_status: OrderStatus.CANCELLED,
+//       last_update_time: ctxt.client.fn.now()
+//     });
+//   }
 
-  @Transaction({ readOnly: true })
-  static async retrieveOrder(ctxt: KnexTransactionContext, order_id: number): Promise<Order> {
-    const item = await ctxt.client<Order>('orders').select("*").where({ order_id: order_id });
-    if (!item.length) {
-      throw new Error(`Order ${order_id} not found`);
-    }
-    return item[0];
-  }
+//   @Transaction({ readOnly: true })
+//   static async retrieveOrder(ctxt: KnexTransactionContext, order_id: number): Promise<Order> {
+//     const item = await ctxt.client<Order>('orders').select("*").where({ order_id: order_id });
+//     if (!item.length) {
+//       throw new Error(`Order ${order_id} not found`);
+//     }
+//     return item[0];
+//   }
 
   @Transaction()
   static async returnOrders(ctxt: TransactionContext<Knex>) {

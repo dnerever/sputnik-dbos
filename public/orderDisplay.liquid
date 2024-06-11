@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DBOS Widget Store</title>
+    <title>DBOS Trading Platform</title>
     <link rel="icon" type="image/x-icon" href="https://dbos-blog-posts.s3.us-west-1.amazonaws.com/live-demo/favicon.ico">
     <style>
         body, html {
@@ -73,7 +73,12 @@
 
 <div class="container">
     <div class="product">
-        <p>id: {{id}}, side: {{side}}, price: {{price}}, size::{{trader}}, timestamp: {{timestamp}}</p>
+        {% comment %} <p>id: {{id}}, side: {{side}}, price: {{price}}, size::{{trader}}, timestamp: {{timestamp}}</p> {% endcomment %}
+        <table>
+        {% tablerow product in collection.products %}
+            {{ product.side }}
+        {% endtablerow %}
+        </table>
     </div>
 </div>
 
