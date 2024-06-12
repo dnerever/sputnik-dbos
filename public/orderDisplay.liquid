@@ -73,10 +73,12 @@
 
 <div class="container">
     <div class="product">
-        {% comment %} <p>id: {{id}}, side: {{side}}, price: {{price}}, size::{{trader}}, timestamp: {{timestamp}}</p> {% endcomment %}
+        {% comment %} <p>id: {{id}}, side: {{side}}, price: {{price}}, size:{{trader}}, timestamp: {{timestamp}}</p> {% endcomment %}
         <table>
-        {% tablerow product in collection.products %}
-            {{ product.side }}
+        {% tablerow order in orders %}
+        <tr>
+            id: {{ order.id }}, side: {{ order.side }}, price: {{ order.price }}, size:{{ order.trader }}
+        </tr>
         {% endtablerow %}
         </table>
     </div>

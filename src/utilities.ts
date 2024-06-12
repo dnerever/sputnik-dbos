@@ -104,12 +104,18 @@ export class ShopUtilities {
     var bids = await ctxt.client<OrderBookEntry>('bids').orderBy('price', 'desc')
     var asks = await ctxt.client<OrderBookEntry>('asks').orderBy('price', 'asc')
 
+    var bids_detailed = await ctxt.client<Order>('orders').where( 'side', 1 )
+    var asks_detailed = await ctxt.client<Order>('orders').where( 'id', 0 )
+
+    var orders_full = await ctxt.client<Order>('orders')
+
+
     ctxt.logger.info(bids)
     ctxt.logger.info(asks)
   
     var taker_order = await ctxt.client<Order>('orders').where( 'id', bids[0].order_id ) // query the taker and maker orders
     var maker_order = await ctxt.client<Order>('orders').where( 'id', asks[0].order_id ) // query the taker and maker orders
 
-    return taker_order;    // [bids, asks]
+    return orders_full;    // [bids, asks]
   }
 }

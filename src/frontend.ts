@@ -34,17 +34,17 @@ export class Frontend {
 
   @GetApi('/')
 static async frontend(ctxt: HandlerContext) {
-    const prod = await ctxt.invoke(ShopUtilities).returnOrders();
+    const buys = await ctxt.invoke(ShopUtilities).returnOrders();
     
     //note: "orderDisplay" is the filename minus the extension of the liquid template
-    return await render("orderDisplay", {   //todo: add my own data to replace the purchase data
+    return await render("orderDisplay", {   //todo: pass data to liquid for loop
         // id: prod[0].id,
         // side: prod[0].side,
         // price: prod[0].price,
         // size: prod[0].size,
         // trader: prod[0].trader,
         // timestamp: prod[0].timestamp,
-        products: prod,
+        orders: buys,
     });
   }
 
