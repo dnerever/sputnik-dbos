@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Book</title>
+    <title>Place Trade</title>
     <link rel="icon" type="image/x-icon" href="https://dbos-blog-posts.s3.us-west-1.amazonaws.com/live-demo/favicon.ico">
     {% comment %} <link type="text/css" href="{{ 'styles.css' |  asset_url }}" rel="stylesheet"> {% endcomment %}
     <style>
@@ -114,27 +114,30 @@
 
 <div class="container">
     <div class="product">
-        <h2>Order Book</h2>
-        {% comment %} <p>id: {{id}}, side: {{side}}, price: {{price}}, size:{{trader}}, timestamp: {{timestamp}}</p> {% endcomment %}
-        <table class="styled-table">
-            <thead>
-                <th>id</th>
-                <th>side</th>
-                <th>price ($)</th>
-                <th>size</th>
-
-            </thead>
-            <tbody>
-                {% tablerow order in orders %}
-                <tr class="active-row">
-                    <td>{{ order.id }}</td>
-                    <td>{{ order.side }}</td>
-                    <td>{{ order.price }}</td>
-                    <td>{{ order.size }}</td>
-                </tr>
-                {% endtablerow %}
-            </tbody>
-        </table>
+        <form action="" method="get" class="form-example">
+            <div class="form-example">
+                <label for="trader">trader: </label>
+                <input type="text" name="trader" id="trader" required />
+            </div>
+            <div class="form-example">
+                <label for="side">side: </label>
+                <select name="side" id="side" required >
+                    <option value="buy">Buy</option>
+                    <option value="sell">Sell</option>
+                </select>
+            </div>
+            <div class="form-example">
+                <label for="price">price: </label>
+                <input type="text" name="price" id="price" required />
+            </div>
+            <div class="form-example">
+                <label for="size">Size: </label>
+                <input type="size" name="size" id="size" required />
+            </div>
+            <div class="form-example">
+                <input type="submit" value="Place Order" />
+            </div>
+        </form>
     </div>
 </div>
 

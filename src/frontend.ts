@@ -32,15 +32,21 @@ async function render(file: string, ctx?: object): Promise<string> {
 
 export class Frontend {
 
-  @GetApi('/')
-static async frontend(ctxt: HandlerContext) {
-    const buys = await ctxt.invoke(ShopUtilities).returnOrders();
+    @GetApi('/')
+    static async frontend(ctxt: HandlerContext) {
+        const buys = await ctxt.invoke(ShopUtilities).returnOrders();
     
-    //note: "orderDisplay" is the filename minus the extension of the liquid template
-    return await render("orderDisplay", {
-        orders: buys,
-    });
-  }
+        //note: "orderDisplay" is the filename minus the extension of the liquid template
+        return await render("orderDisplay", {
+            orders: buys,
+        });
+    }
+
+    @GetApi('/order')
+    static async order(ctxt: HandlerContext) {
+        // const 
+        return await render("placeOrder");
+    }
 
 //   @GetApi('/payment/:key')
 //   static payment(_ctxt: HandlerContext, key: string) {
