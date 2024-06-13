@@ -67,6 +67,43 @@
             background-color: #45a049;
             box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
         }
+
+        .styled-table {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .styled-table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+        }
+
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+
+        .styled-table tbody tr.active-row {
+            font-weight: bold;
+            color: #009879;
+        }
     </style>
 </head>
 <body>
@@ -74,12 +111,24 @@
 <div class="container">
     <div class="product">
         {% comment %} <p>id: {{id}}, side: {{side}}, price: {{price}}, size:{{trader}}, timestamp: {{timestamp}}</p> {% endcomment %}
-        <table>
-        {% tablerow order in orders %}
-        <tr>
-            id: {{ order.id }}, side: {{ order.side }}, price: {{ order.price }}, size:{{ order.trader }}
-        </tr>
-        {% endtablerow %}
+        <table class="styled-table">
+            <thead>
+                <th>id</th>
+                <th>side</th>
+                <th>price ($)</th>
+                <th>size</th>
+
+            </thead>
+            <tbody>
+                {% tablerow order in orders %}
+                <tr class="active-row">
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.side }}</td>
+                    <td>{{ order.price }}</td>
+                    <td>{{ order.size }}</td>
+                </tr>
+                {% endtablerow %}
+            </tbody>
         </table>
     </div>
 </div>
