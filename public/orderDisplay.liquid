@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DBOS Trading Platform</title>
     <link rel="icon" type="image/x-icon" href="https://dbos-blog-posts.s3.us-west-1.amazonaws.com/live-demo/favicon.ico">
+    {% comment %} <link type="text/css" href="{{ 'styles.css' |  asset_url }}" rel="stylesheet"> {% endcomment %}
     <style>
         body, html {
             margin: 0;
@@ -35,6 +36,7 @@
             width: 80%;
             max-width: 600px;
             text-align: center;
+            align-items: center;
         }
 
         .product img {
@@ -75,6 +77,8 @@
             font-family: sans-serif;
             min-width: 400px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .styled-table thead tr {
@@ -108,11 +112,9 @@
 </head>
 <body>
 
-<title>
-    Order Book
-</title>
 <div class="container">
     <div class="product">
+        <h2>Order Book</h2>
         {% comment %} <p>id: {{id}}, side: {{side}}, price: {{price}}, size:{{trader}}, timestamp: {{timestamp}}</p> {% endcomment %}
         <table class="styled-table">
             <thead>
