@@ -165,10 +165,10 @@ export class OrderClass {
     return await ctxt.invoke(OrderClass).listOrders();
   }
 
-  @GetApi('/ordersPP')
-  static async ordersPrettyPrintHandler(ctxt: HandlerContext) {
-    return await ctxt.invoke(OrderClass).ordersPrettyPrint();
-  }
+  // @GetApi('/ordersPP')
+  // static async ordersPrettyPrintHandler(ctxt: HandlerContext) {
+  //   return await ctxt.invoke(OrderClass).ordersPrettyPrint();
+  // }
 
   @PostApi('/crash_application')
   static async crashApplication(_ctxt: HandlerContext) {
