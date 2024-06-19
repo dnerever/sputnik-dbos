@@ -1,4 +1,4 @@
-import { GetApi, HandlerContext } from "@dbos-inc/dbos-sdk";
+import { GetApi, HandlerContext, PostApi } from "@dbos-inc/dbos-sdk";
 import path from 'path';
 import Koa from 'koa';
 import { ShopUtilities } from "./utilities";
@@ -18,6 +18,19 @@ const exampleMiddleware: Koa.Middleware = async (ctx, next) => {
 //     },
 //     encoding: "utf-8"
 // }))
+
+interface FormData {
+    trader: BigInteger;
+    side: String;
+    price: number;
+    size: number;
+}
+
+interface ApiREsponse {
+    success: boolean;
+    message?: string;
+    error?: string;
+}
 
 // This engine makes cleans up the path and name of each liquid file
 const liquidEngine = new Liquid({
@@ -47,6 +60,25 @@ export class Frontend {
         // const 
         return await render("placeOrder");
     }
+
+    @PostApi('/submitFormData')
+    static async submitFormData(ctxt: HandlerContext) {
+        const formData = ctxt.body;
+
+        try {
+            console.log('Received form data:', formData);
+            return { success: true, message: 'form data received successfully' };
+        } catch (e) {
+            console.error('Error handling form data:', e);
+            return { success: false, error: 'Failed to handle form data' };
+        }
+    }
+
+    // @GetApi('/order2')
+    // static async order2(ctxt: HandlerContext) {
+    //     // const 
+    //     return await render("placeOrder");
+    // }
 
 //   @GetApi('/payment/:key')
 //   static payment(_ctxt: HandlerContext, key: string) {
