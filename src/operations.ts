@@ -12,12 +12,12 @@ export { Frontend };
 
 
 export interface Order {
-  id: number;
+  id?: number;
   side: string;
   price: number;
   size: number;
   trader: number;
-  timestamp: Date;
+  timestamp?: Date;
 }
 
 export interface OrderBookEntry {
@@ -80,8 +80,19 @@ export class OrderClass {
       // ctxt.logger.info(taker_order)
       // ctxt.logger.info("break")
       // ctxt.logger.info(asks[0])
-      var true_price = (taker_order[0].timestamp > maker_order[0].timestamp) ? taker_order[0].price : maker_order[0].price  // choose the earliest placed order
 
+      // var true_price = (taker_order[0]?.timestamp > maker_order[0]?.timestamp) ? taker_order[0].price : maker_order[0].price;  // choose the earliest placed order
+
+      // const true_size = Math.min(taker_order[0].size, maker_order[0].size);
+
+      var true_price = 0; // Default value or appropriate fallback
+
+      if (taker_order[0]?.timestamp !== undefined && maker_order[0]?.timestamp !== undefined) {
+          true_price = (taker_order[0].timestamp > maker_order[0].timestamp) ? taker_order[0].price : maker_order[0].price;
+      } else {
+          ctxt.logger.info('Timestamp is undefined for either taker_order or maker_order.');
+      }
+      
       const true_size = Math.min(taker_order[0].size, maker_order[0].size);
 
       res.push({
@@ -158,6 +169,18 @@ export class OrderClass {
     // await ctxt.invoke(OrderClass).sendFills(fills);
     // const res = await ctxt.invoke(OrderClass).placeOrderWorkflow(order);
     return fills;
+  }
+
+  @PostApi('/submitFormData')
+  static async submitFormData(ctxt: HandlerContext, @ArgSource(ArgSources.BODY) order: Order) {
+
+    try {
+      console.log('Received form data:', order);
+      return { success: true, message: 'form data received successfully' };
+    } catch (e) {
+      console.error('Error handling form data:', e);
+      return { success: false, error: 'Failed to handle form data' };
+    }
   }
 
   @GetApi('/listOrders')

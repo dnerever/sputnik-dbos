@@ -114,7 +114,7 @@
 
 <div class="container">
     <div class="product">
-        <form action="/order" method="POST" class="form-example">
+        <form action="/submitFormData" method="POST" class="form-example" id="orderForm">
             <div class="form-example">
                 <label for="trader">trader: </label>
                 <input type="text" name="trader" id="trader" required />
@@ -143,28 +143,68 @@
 </div>
 
 <script>
-document.getElementById('purchaseButton').addEventListener('click', async function() {
+const form = document.getElementById('orderForm');
+
+form.addEventListener('submit', async (event) => {
+    // console.log('Within HTML JS script =========')
+    event.preventDefault();
+
+    const formData = new FormData(form);
+    // const jsonData = JSON.stringify(Object.fromEntries(formData.entries()));
+    const order = {
+        side: formData.get('side'),
+        price: parseFloat(formData.get('price')),
+        size: parseInt(formData.get('size')),
+        trader: parseInt(formData.get('trader')),
+        id: 0,  // placeholder for the server to replace
+        timestamp: new Date(),  // placeholder for the server to replace
+    };
+    
     try {
-        const response = await fetch('/checkout/{{uuid}}', {
+        const response = await fetch('/submitFormData', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify(order),
         });
 
-        if (response.ok) {
-            const url = await response.text();
-            window.location.href = url;
-        } else {
-            const errorText = await response.text();
-            console.error('Error:', errorText);
-            window.location.href = "/error";
+        if (!response.ok) {
+            throw new Error('Failed to submit form data');
         }
+
+        const responseData = await response.json();
+        console.log('Form submission response:', responseData);
+        // Handle response
     } catch (error) {
-        console.error('Error:', error);
-        window.location.href = "/error";
+        console.error('Error submitting form:', error);
+        // Handle error
     }
 });
+
+// document.getElementById('placeOrderButton').addEventListener('click', async function() {
+//     try {
+//         const response = await fetch('/submitFormData', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             order: jsonData,
+//         });
+
+//         if (response.ok) {
+//             const url = await response.text();
+//             window.location.href = url;
+//         } else {
+//             const errorText = await response.text();
+//             console.error('Error:', errorText);
+//             window.location.href = "/error";
+//         }
+//     } catch (error) {
+//         console.error('Error:', error);
+//         window.location.href = "/error";
+//     }
+// });
 </script>
 
 </body>

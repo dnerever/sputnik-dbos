@@ -3,6 +3,7 @@ import path from 'path';
 import Koa from 'koa';
 import { ShopUtilities } from "./utilities";
 import { Liquid } from "liquidjs";
+import { Order } from "./operations"
 
 const exampleMiddleware: Koa.Middleware = async (ctx, next) => {
     console.log(ctx.request.req);
@@ -26,7 +27,7 @@ interface FormData {
     size: number;
 }
 
-interface ApiREsponse {
+interface ApiResponse {
     success: boolean;
     message?: string;
     error?: string;
@@ -61,18 +62,18 @@ export class Frontend {
         return await render("placeOrder");
     }
 
-    @PostApi('/submitFormData')
-    static async submitFormData(ctxt: HandlerContext) {
-        const formData = ctxt.body;
+    // @PostApi('/submitFormData')
+    // static async submitFormData(ctxt: HandlerContext) {
+    //     const formData = ctxt.body;
 
-        try {
-            console.log('Received form data:', formData);
-            return { success: true, message: 'form data received successfully' };
-        } catch (e) {
-            console.error('Error handling form data:', e);
-            return { success: false, error: 'Failed to handle form data' };
-        }
-    }
+    //     try {
+    //         console.log('Received form data:', formData);
+    //         return { success: true, message: 'form data received successfully' };
+    //     } catch (e) {
+    //         console.error('Error handling form data:', e);
+    //         return { success: false, error: 'Failed to handle form data' };
+    //     }
+    // }
 
     // @GetApi('/order2')
     // static async order2(ctxt: HandlerContext) {
