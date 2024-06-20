@@ -171,6 +171,8 @@ export class OrderClass {
     return fills;
   }
 
+  //* Just watched someone else demo their TS/React form. I should try that.
+  //* Should switch to developing locally for speed reasons
   @PostApi('/submitFormData')
   static async submitFormData(ctxt: HandlerContext, @ArgSource(ArgSources.BODY) order: Order) {
 
