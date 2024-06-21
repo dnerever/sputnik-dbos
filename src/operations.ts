@@ -161,7 +161,7 @@ export class OrderClass {
 
   @Workflow()
   @PostApi('/order') 
-  static async placeOrderHandler(ctxt: WorkflowContext, @ArgSource(ArgSources.BODY) order: Order) {
+  static async placeOrderHandler(ctxt: WorkflowContext, @ArgSource(ArgSources.BODY) order: Order) { //take inputs as arguments
     await ctxt.invoke(OrderClass).insertOrder(order);
     // const fills:Fill[] = [];
     var fills = await ctxt.invoke(OrderClass).findMatches();
