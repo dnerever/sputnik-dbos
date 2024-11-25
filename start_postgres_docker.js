@@ -1,3 +1,5 @@
+#!/usr/bin/node
+
 const { execSync } = require('child_process');
 
 // Default PostgreSQL port
